@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using TicTacToe.Display;
+using TicTacToe.Games;
 using TicTacToe.Players;
 
 namespace TicTacToe.Boards;
@@ -26,18 +27,18 @@ public class Board
         return true;
     }
 
-    public Maybe<string> IsGameOver(IPlayer currentPlayer)
+    public GameState IsGameOver(IPlayer currentPlayer)
     {
         if (IsGameBoardWin())
         {
-            return Maybe.From($"Player {currentPlayer} has won the game !!!!");
+            return GameState.Win;
         }
         if (IsGameBoardFull())
         {
-            return Maybe.From($"it's a draw!");
+            return GameState.Draw;
         }
 
-        return Maybe.None;
+        return GameState.InProgress;
     }
 
     public void DisplayGameBoard()

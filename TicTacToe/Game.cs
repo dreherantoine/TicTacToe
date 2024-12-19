@@ -1,12 +1,14 @@
 ﻿using CSharpFunctionalExtensions;
 using TicTacToe.Boards;
 using TicTacToe.Display;
+using TicTacToe.Games;
 using TicTacToe.Players;
 
 namespace TicTacToe;
 
 public class Game
 {
+    private GameState gameState = GameState.InProgress;
     private readonly IDisplay display;
     private readonly Board board;
     private readonly IPlayer player1;
@@ -25,7 +27,7 @@ public class Game
         this.display = display;
     }
 
-    public void Play()
+    public GameResult Play()
     {
         this.board.DisplayGameBoard();
 
@@ -46,11 +48,16 @@ public class Game
             }
             this.board.DisplayGameBoard();
 
-            Maybe<string> gameResult = this.board.IsGameOver(currentPlayer);
-            if (gameResult.HasValue)
+            GameState gameResult = this.board.IsGameOver(currentPlayer);
+            if (gameResult == GameState.Win)
             {
-                this.display.WriteLine(gameResult.Value);
-                break;
+                this.display.WriteLine(gameResult);
+                return GameResult.Win(currentPlayer.Icon);
+            }
+            else if (gameResult == GameState.Draw)
+            {
+                this.display.WriteLine(gameResult);
+                return GameResult.Draw();
             }
 
             this.SwitchPlayer();
