@@ -15,7 +15,7 @@ namespace TicTacToeTest
             RandomPlayer randomPlayer = new RandomPlayer(PlayerConstants.PlayerOneIcon);
 
             // Act
-            Result<PlayerMove> actualMove = randomPlayer.GetNextMove();
+            Result<PlayerMove> actualMove = randomPlayer.GetNextMoveAsync();
 
             // Assert
             actualMove.IsSuccess

@@ -25,7 +25,7 @@ namespace TicTacToeTest
             Game game = new Game(new DebugDisplay(), fakePlayer1, fakePlayer2);
 
             // Act
-            GameResult actualGameResult = game.Play();
+            GameResult actualGameResult = game.PlayAsync();
 
             // Assert
             actualGameResult
@@ -55,7 +55,7 @@ namespace TicTacToeTest
             this.Moves = moves;
         }
 
-        public override Result<PlayerMove> GetNextMove()
+        public override Result<PlayerMove> GetNextMoveAsync()
             => Moves.Dequeue();
     }
 }
