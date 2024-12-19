@@ -1,22 +1,52 @@
-﻿
+﻿using TicTacToe.Display;
+using TicTacToe.Players;
 
 namespace TicTacToe;
 
-internal class Program
+public class Program
 {
-    public static char PlayerOneIcon = 'O';
-    public static char PlayerTwoIcon = 'X';
 
     static void Main(string[] args)
     {
-        Boolean useAI = AI.DisplayGameChoiceAndHeader();
+        IDisplay display = new ConsoleDisplay();
 
-        Player player1 = new Player(PlayerOneIcon);
-        IPlayer player2 = useAI ? new FakePlayer(PlayerTwoIcon) : new Player(PlayerTwoIcon);
+        (IPlayer, IPlayer) players = SelectPlayers();
 
-        Game game = new Game(player1, player2);
-        game.Init();
+        Game game = new Game(display, players.Item1, players.Item2);
+
         game.Play();
     }
 
+    private static (IPlayer, IPlayer) SelectPlayers()
+    {
+        Console.WriteLine("Choose game type:");
+        Console.WriteLine("1. Human vs Human (default)");
+        Console.WriteLine("2. Human vs Random");
+        Console.WriteLine("3. Random vs Random");
+
+        SelectPlayerChoices choice = SelectPlayerChoices.HumanVsHuman;
+        try
+        {
+            choice = (SelectPlayerChoices)int.Parse(Console.ReadLine());
+        }
+        catch (Exception)
+        {
+        }
+
+        return choice switch
+        {
+            SelectPlayerChoices.HumanVsHuman => (new HumanPlayer(PlayerConstants.PlayerOneIcon), new HumanPlayer(PlayerConstants.PlayerTwoIcon)),
+            SelectPlayerChoices.HumanVsRandom => (new HumanPlayer(PlayerConstants.PlayerOneIcon), new RandomPlayer(PlayerConstants.PlayerTwoIcon)),
+            SelectPlayerChoices.RandomVsRandom => (new RandomPlayer(PlayerConstants.PlayerOneIcon), new RandomPlayer(PlayerConstants.PlayerTwoIcon)),
+            _ => (new HumanPlayer(PlayerConstants.PlayerOneIcon), new HumanPlayer(PlayerConstants.PlayerTwoIcon))
+        };
+    }
+
+    public enum SelectPlayerChoices
+    {
+        HumanVsHuman = 1,
+        HumanVsRandom = 2,
+        RandomVsRandom = 3,
+
+    }
 }
