@@ -1,70 +1,70 @@
-﻿namespace TicTacToe;
+﻿
+using CSharpFunctionalExtensions;
+
+namespace TicTacToe;
 
 internal class Game
 {
-    private GameBoard board { get; set; }
-    private GameSession session { get; set; }
+    public static char PlayerOneIcon = 'O';
+    public static char PlayerTwoIcon = 'X';
 
-    public void Initialize()
+    private readonly Board board;
+    private readonly IPlayer player1;
+    private readonly IPlayer player2;
+
+    public IPlayer currentPlayer {  get; private set; }
+
+    public Game(IPlayer player1, IPlayer player2)
     {
-        GameBoard board = new();
-        GameSession session = new();
-
-        board.Initialize();
-        session.Initiliaze();
+        this.board = new Board();
+        this.player1 = player1;
+        this.player2 = player2;
     }
 
-    public void Start()
+    public void Init()
     {
-        board.Display();
+        this.board.Init();
+        this.currentPlayer = this.player1;
+    }
+
+    public void Play()
+    {
+        this.board.DisplayGameBoardAndHeader();
+
         while (true)
         {
-            Console.WriteLine($"Player {session.CurrentPlayer} - Enter row (1-3) and column (1-3), separated by a space, or 'q' to quit...");
-            string? input = Console.ReadLine();
-
-            if (string.Compare(input, "q", StringComparison.OrdinalIgnoreCase) == 0)
-                break;
-
-            string[]? splittedInput = input?.Split(' ');
-
-            if (int.TryParse(splittedInput?[0], out int targetRow) is false ||
-                targetRow < 1 || targetRow > 3)
+            Result<PlayerMoves> playerMoves = this.currentPlayer.GetNextMove();
+            if (playerMoves.IsFailure)
             {
-                Console.WriteLine("Invalid target cell row must be betwen 1 and 3");
+                Console.WriteLine(playerMoves.Error);
                 continue;
             }
 
-            if (int.TryParse(splittedInput?[1], out int targetColumn) is false ||
-                targetColumn < 1 || targetColumn > 3)
-            {
-                Console.WriteLine("Invalid target cell column must be betwen 1 and 3");
-                continue;
-            }
-
-            bool movePlayedSuccessfully = session.PlayOnGameBoard(board, targetRow, targetColumn, session.CurrentPlayer);
-
+            bool movePlayedSuccessfully = this.board.PlayMoveOnBoard(playerMoves.Value, this.currentPlayer.icon);
             if (movePlayedSuccessfully is false)
             {
                 Console.WriteLine("Invalid move");
                 continue;
             }
+            this.board.DisplayGameBoardAndHeader();
 
-            Console.Clear();
-
-            board.Display();
-
-            if (session.IsGameBoardWin(board.Grid))
+            Maybe<string> gameResult = this.board.IsGameOver(currentPlayer);
+            if (gameResult.HasValue)
             {
-                Console.WriteLine($"Player {session.CurrentPlayer} has won the game !!!!");
-                break;
-            }
-            if (session.IsGameBoardFull(board.Grid))
-            {
-                Console.WriteLine($"It's a draw");
+                Console.WriteLine(gameResult.Value);
                 break;
             }
 
-            session.SwitchPlayer();
+            this.SwitchPlayer();
         }
     }
+
+    private void SwitchPlayer()
+    {
+        if (this.currentPlayer == player1)
+            this.currentPlayer = player2;
+        else
+            this.currentPlayer = player1;
+    }
+
 }
