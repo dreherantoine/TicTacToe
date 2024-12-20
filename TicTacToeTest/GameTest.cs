@@ -12,7 +12,7 @@ namespace TicTacToeTest
     {
 
         [Fact]
-        public void Play_TwoFakePlayerTargettingACol_ReturnsPlayerOneWon()
+        public async void Play_TwoFakePlayerTargettingACol_ReturnsPlayerOneWon()
         {
             // Arrange
             FakePlayer fakePlayer1 = new FakePlayer(
@@ -25,7 +25,7 @@ namespace TicTacToeTest
             Game game = new Game(new DebugDisplay(), fakePlayer1, fakePlayer2);
 
             // Act
-            GameResult actualGameResult = game.PlayAsync();
+            GameResult actualGameResult = await game.PlayAsync();
 
             // Assert
             actualGameResult
@@ -55,7 +55,7 @@ namespace TicTacToeTest
             this.Moves = moves;
         }
 
-        public override Result<PlayerMove> GetNextMoveAsync()
+        public async override Task<Result<PlayerMove>> GetNextMoveAsync()
             => Moves.Dequeue();
     }
 }

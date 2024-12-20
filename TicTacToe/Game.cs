@@ -52,12 +52,12 @@ public class Game
             GameState gameResult = this.board.IsGameOver(currentPlayer);
             if (gameResult == GameState.Win)
             {
-                this.display.WriteLine(gameResult);
+                this.display.WriteLine(gameResult.ToString());
                 return GameResult.Win(currentPlayer.Icon);
             }
             else if (gameResult == GameState.Draw)
             {
-                this.display.WriteLine(gameResult);
+                this.display.WriteLine(gameResult.ToString());
                 return GameResult.Draw();
             }
 

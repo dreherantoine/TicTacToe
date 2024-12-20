@@ -14,6 +14,8 @@ public class HumanPlayer : Player
 
     public override async Task<Result<PlayerMove>> GetNextMoveAsync()
     {
+        await Task.CompletedTask;
+
         Console.WriteLine($"Player {Icon} - Enter row (1-3) and column (1-3), separated by a space");
         string? input = Console.ReadLine();
 
@@ -31,6 +33,7 @@ public class HumanPlayer : Player
             return Result.Failure<PlayerMove>("Invalid target cell column must be betwen 1 and 3");
         }
 
+        // Task.FromResult(...);
         return Result.Success(new PlayerMove(targetRow, targetColumn));
     }
 }

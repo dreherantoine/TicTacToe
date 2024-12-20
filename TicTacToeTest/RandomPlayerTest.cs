@@ -9,13 +9,13 @@ namespace TicTacToeTest
     public class RandomPlayerTest
     {
         [Fact]
-        public void GetNextMove_Default_ReturnsAValidPlayerMove()
+        public async void GetNextMove_Default_ReturnsAValidPlayerMove()
         {
             // Arrange
             RandomPlayer randomPlayer = new RandomPlayer(PlayerConstants.PlayerOneIcon);
 
             // Act
-            Result<PlayerMove> actualMove = randomPlayer.GetNextMoveAsync();
+            Result<PlayerMove> actualMove = await randomPlayer.GetNextMoveAsync();
 
             // Assert
             actualMove.IsSuccess
